@@ -3,9 +3,9 @@
 ## 📋 Project Overview
 **TradingAgents** is a multi-agent LLM framework for financial trading that simulates real-world trading firms through specialized AI agents collaborating on market analysis and trading decisions.
 
-**Current Status**: ✅ Basic Setup Complete | 🧪 Architecture Testing Phase  
-**Last Updated**: 2025-01-27  
-**Version**: v0.1.0-alpha
+**Current Status**: ✅ Setup Complete | 🧪 Ready for Architecture Testing  
+**Last Updated**: 2024-06-09  
+**Version**: v0.1.1-alpha
 
 ---
 
@@ -131,11 +131,15 @@ graph TB
 - [x] **Basic Agent Types**: Market, Sentiment, News, Fundamentals analysts
 - [x] **Memory System**: Agent memory for learning from past decisions
 - [x] **CLI Interface**: Interactive command-line interface
+- [x] **Configuration Management**: Fixed hardcoded paths, optimized for testing
+- [x] **Secure API Management**: .env file support with automatic loading
+- [x] **User-Friendly Interface**: Improved main.py with clear error messages
+- [x] **Development Workflow**: Git setup with fork tracking and proper remotes
 
 ### 🔄 In Progress
+- [ ] **OpenAI API Access**: Resolving quota/billing setup (blocked)
 - [ ] **Architecture Testing**: Validating agent interactions and decision flow
-- [ ] **Cost Optimization**: Minimizing API calls for testing phase
-- [ ] **Error Handling**: Robust error handling for API failures
+- [ ] **Cost Optimization**: Measuring and optimizing token usage
 
 ### ❌ Pending
 - [ ] **Historical Backtesting**: Testing against historical market data
@@ -148,17 +152,24 @@ graph TB
 
 ## 📝 Changelog
 
-### v0.1.0-alpha (2025-01-27)
+### v0.1.1-alpha (2024-06-09)
+- **Added**: Automatic .env file loading with tradingagents.env_loader
+- **Added**: Comprehensive architecture planning document (ARCHITECTURE_PLAN.md)
+- **Added**: python-dotenv dependency for secure API key management
+- **Fixed**: Hardcoded paths in default_config.py (removed /Users/yluo/ references)
+- **Fixed**: Model configuration inconsistencies (o4-mini → gpt-4o-mini)
+- **Improved**: main.py with user-friendly CLI and error handling
+- **Improved**: Git workflow setup with proper fork tracking
+- **Changed**: Default configuration optimized for cost-efficient testing
+- **Security**: Added .env to .gitignore for API key protection
+
+### v0.1.0-alpha (2024-06-09)
 - **Added**: Initial project setup and environment configuration
-- **Added**: .env file support for secure API key management
-- **Added**: Complete dependency installation and verification
 - **Added**: LangGraph-based agent framework
 - **Added**: Multi-agent analyst team (Market, Sentiment, News, Fundamentals)
 - **Added**: Research team with Bull/Bear researchers
 - **Added**: Trading and Risk Management agents
 - **Added**: CLI interface for interactive testing
-- **Fixed**: Environment variable loading issues
-- **Changed**: Model configuration to use gpt-4o-mini for cost efficiency
 
 ---
 
@@ -426,10 +437,17 @@ graph TB
 ## 📞 Next Actions Summary
 
 ### This Week (High Priority)
-1. 🔴 **Resolve OpenAI API access** - Add payment method
-2. 🟡 **Complete agent flow testing** - Validate end-to-end pipeline
-3. 🟡 **Implement cost monitoring** - Track and optimize token usage
-4. 🟢 **Document test results** - Update this plan with findings
+1. 🔴 **Resolve OpenAI API access** - Add payment method to unlock quota
+2. 🟡 **Initial architecture validation** - Test single agent execution
+3. 🟡 **Cost monitoring setup** - Measure token usage per analysis
+4. 🟢 **Git workflow** - ✅ Complete: Fork setup and initial commit
+
+### Completed This Week ✅
+- ✅ **Fixed configuration paths** - Removed hardcoded user directories
+- ✅ **Improved main.py interface** - User-friendly CLI with error handling  
+- ✅ **Secure API setup** - .env file with automatic loading
+- ✅ **Architecture planning** - Comprehensive 6-month roadmap created
+- ✅ **Git workflow** - Fork tracking and proper remote setup
 
 ### Next Week (Medium Priority)
 1. **Expand testing scenarios** - Multiple stocks and market conditions
