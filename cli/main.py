@@ -1,3 +1,6 @@
+# Load environment variables from .env file
+import tradingagents.env_loader
+
 from typing import Optional
 import datetime
 import typer
