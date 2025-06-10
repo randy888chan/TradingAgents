@@ -55,8 +55,9 @@ class TradingAgentsGraph:
         )
 
         # Initialize LLMs
-        self.deep_thinking_llm = ChatOpenAI(model=self.config["deep_think_llm"])
+        self.deep_thinking_llm = ChatOpenAI(base_url=self.config['base_url'],model=self.config["deep_think_llm"])
         self.quick_thinking_llm = ChatOpenAI(
+            base_url=self.config['base_url'],
             model=self.config["quick_think_llm"], temperature=0.1
         )
         self.toolkit = Toolkit(config=self.config)

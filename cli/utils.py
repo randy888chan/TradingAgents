@@ -131,6 +131,7 @@ def select_shallow_thinking_agent() -> str:
         ("GPT-4.1-nano - Ultra-lightweight model for basic operations", "gpt-4.1-nano"),
         ("GPT-4.1-mini - Compact model with good performance", "gpt-4.1-mini"),
         ("GPT-4o - Standard model with solid capabilities", "gpt-4o"),
+        ("Deepseek R1","deepseek/deepseek-chat-v3-0324:free"),
     ]
 
     choice = questionary.select(
@@ -170,6 +171,7 @@ def select_deep_thinking_agent() -> str:
         ("o3-mini - Advanced reasoning model (lightweight)", "o3-mini"),
         ("o3 - Full advanced reasoning model", "o3"),
         ("o1 - Premier reasoning and problem-solving model", "o1"),
+        ("Deepseek R1","deepseek/deepseek-chat-v3-0324:free"),
     ]
 
     choice = questionary.select(

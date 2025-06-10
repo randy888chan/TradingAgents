@@ -2,21 +2,23 @@ import chromadb
 from chromadb.config import Settings
 from openai import OpenAI
 import numpy as np
+from sentence_transformers import SentenceTransformer
 
 
 class FinancialSituationMemory:
     def __init__(self, name):
-        self.client = OpenAI()
+        self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
         self.chroma_client = chromadb.Client(Settings(allow_reset=True))
         self.situation_collection = self.chroma_client.create_collection(name=name)
 
     def get_embedding(self, text):
         """Get OpenAI embedding for a text"""
-        response = self.client.embeddings.create(
-            model="text-embedding-ada-002", input=text
-        )
-        return response.data[0].embedding
-
+        # response = self.client.embeddings.create(
+        #     model="text-embedding-ada-002", input=text
+        # )
+        # return response.data[0].embedding
+        return self.embedding_model.encode(text, convert_to_tensor=False)
+        
     def add_situations(self, situations_and_advice):
         """Add financial situations and their corresponding advice. Parameter is a list of tuples (situation, rec)"""
 
