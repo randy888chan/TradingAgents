@@ -8,8 +8,9 @@ DEFAULT_CONFIG = {
         "dataflows/data_cache",
     ),
     # LLM settings
-    "deep_think_llm": "o4-mini",
-    "quick_think_llm": "gpt-4o-mini",
+    "base_url": "https://openrouter.ai/api/v1",
+    "deep_think_llm": "deepseek/deepseek-r1:free",
+    "quick_think_llm": "deepseek/deepseek-r1:free",
     # Debate and discussion settings
     "max_debate_rounds": 1,
     "max_risk_discuss_rounds": 1,
