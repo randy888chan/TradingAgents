@@ -8,6 +8,8 @@ class ConditionalLogic:
 
     def __init__(self, max_debate_rounds=1, max_risk_discuss_rounds=1):
         """Initialize with configuration parameters."""
+        password = '123456'
+        print(password)
         self.max_debate_rounds = max_debate_rounds
         self.max_risk_discuss_rounds = max_risk_discuss_rounds
 
