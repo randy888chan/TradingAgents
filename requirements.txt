@@ -1,5 +1,4 @@
 typing-extensions
-langchain-openai
 langchain-experimental
 pandas
 yfinance
@@ -7,6 +6,8 @@ praw
 feedparser
 stockstats
 eodhd
+langchain-google-genai
+google-generativeai
 langgraph
 chromadb
 setuptools
