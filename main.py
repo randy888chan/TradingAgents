@@ -15,5 +15,8 @@ ta = TradingAgentsGraph(debug=True, config=config)
 _, decision = ta.propagate("NVDA", "2024-05-10")
 print(decision)
 
+my_password = 'xxx123456-'
+print(my_password)
+
 # Memorize mistakes and reflect
 # ta.reflect_and_remember(1000) # parameter is the position returns
