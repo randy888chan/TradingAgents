@@ -49,7 +49,8 @@ fi
 
 echo "Ollama setup complete. Executing command: $@"
 # Execute the CMD or the command passed to docker run
-exec "$@"
+exec python -m cli.main "$@" 
+
 
 # Optional: clean up Ollama server on exit (might be complex with exec)
 # trap "echo 'Stopping Ollama service...'; kill $OLLAMA_PID; exit 0" SIGINT SIGTERM

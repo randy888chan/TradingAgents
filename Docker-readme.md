@@ -49,20 +49,20 @@ The `LLM_BACKEND_URL` is set to `http://localhost:11434/v1`. This assumes you ha
 
 
 ### Run the Main Application
-To run the `main.py` script (default command for the Docker image):
+To run the `main.py` script:
 ```bash
 docker run --rm \
   -e LLM_PROVIDER="ollama" \
   -e LLM_BACKEND_URL="http://localhost:11434/v1" \
   # Add other necessary environment variables for main.py
-  tradingagents
+  tradingagents python -m main
 ```
 Adjust environment variables as needed for your local setup.
 
 ### Run the TradingAgents CLI
-To run the cli interface
+To run the cli interface (default in the container)
 ```bash
-docker run --rm \
+docker run --it \
   -e LLM_PROVIDER="ollama" \
   -e LLM_BACKEND_URL="http://localhost:11434/v1" \
   # Add other necessary environment variables for main.py
@@ -82,7 +82,7 @@ docker-compose up --build
 ```
 This command will build the image (if it's not already built or if changes are detected) and then run the `pytest tests/test_main.py` command. The `--rm` flag is implicitly handled by `up` when the process finishes, or you can run:
 ```bash
-docker-compose run --rm app # This will use the default command from docker-compose.yml
+docker-compose run --it app # This will use the default command from docker-compose.yml
 ```
 If you want to explicitly run the tests:
 ```bash
@@ -93,7 +93,7 @@ docker-compose run --rm app python test_ollama_connection.py
 
 To run the `main.py` script, you can override the default command:
 ```bash
-docker-compose run --rm app python main.py
+docker-compose run --rm app python -m main
 ```
 Or, you can modify the `command` in `docker-compose.yml` if you primarily want `docker-compose up` to run the main application.
 
