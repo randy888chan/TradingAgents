@@ -18,7 +18,7 @@ When you run `docker-compose up` or `docker-compose run`, Docker Compose automat
 
 The `.env` file itself is ignored by Git (as specified in `.gitignore`), so your local configurations will not be committed to the repository.
 
-For streamlined experience, it is recommended to use docker compose as it simplifies experience eg handles mounting of directories for caching. Skip to [Docker Compose](#Using Docker Compose) section for this.
+For streamlined experience, it is recommended to use docker compose as it simplifies experience eg handles mounting of directories for caching. Skip to [Docker Compose](#using-docker-compose) section for this.
 
 
 ## Running with Docker
