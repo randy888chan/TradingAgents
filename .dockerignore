@@ -20,7 +20,8 @@ venv/
 *.swo
 
 # Ollama cache directory (if it somehow ends up in build context)
-.ollama_cache/
+.ollama/
+.cache/
 
 # Docker specific files (should not be part of the image content itself)
 Dockerfile

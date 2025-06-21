@@ -1,4 +1,4 @@
-# Local run with Docker or docker-compse
+# Local run with Docker or docker-compose
 
 ## Environment Configuration with .env
 
