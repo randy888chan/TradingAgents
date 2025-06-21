@@ -30,6 +30,12 @@ MODEL_TO_PULL=${LLM_DEEP_THINK_MODEL:-"qwen3:0.6b"}
 echo "Pulling Ollama model: $MODEL_TO_PULL..."
 ollama pull "$MODEL_TO_PULL"
 echo "Model $MODEL_TO_PULL pulled."
+
+echo "Pulling embeddings model..."
+ollama pull nomic-embed-text
+echo "Embeddings model pulled."
+# List models to verify the pull
+echo "Listing available models..."
 ollama list # List models for verification
 
 # Test the connection before running the main application

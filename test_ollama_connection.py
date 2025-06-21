@@ -13,11 +13,13 @@ def test_ollama_connection():
     
     # Get configuration from environment
     backend_url = os.environ.get("LLM_BACKEND_URL", "http://localhost:11434/v1")
-    model = os.environ.get("LLM_DEEP_THINK_MODEL", "qwen2.5")
+    model = os.environ.get("LLM_DEEP_THINK_MODEL", "qwen3:0.6b")
+    embedding_model = os.environ.get("LLM_EMBEDDING_MODEL", "nomic-embed-text")
     
     print(f"Testing Ollama connection:")
     print(f"  Backend URL: {backend_url}")
     print(f"  Model: {model}")
+    print(f"  Embedding Model: {embedding_model}")
     
     # Test 1: Check if Ollama API is responding
     try:
@@ -37,7 +39,7 @@ def test_ollama_connection():
         models = response.json().get("models", [])
         model_names = [m.get("name", "") for m in models]
         
-        if model in model_names:
+        if any(name.startswith(model) for name in model_names):
             print(f"✅ Model '{model}' is available")
         else:
             print(f"❌ Model '{model}' not found. Available models: {model_names}")
@@ -59,6 +61,41 @@ def test_ollama_connection():
         return True
     except Exception as e:
         print(f"❌ OpenAI-compatible API test failed: {e}")
+        return False
+    
+    # Test 4: Check if the embedding model is available
+    try:
+        response = requests.get(f"{api_url}/api/tags", timeout=10)
+        models = response.json().get("models", [])
+        model_names = [m.get("name") for m in models if m.get("name")]
+        
+        # Check if any of the available models starts with the embedding model name
+        if any(name.startswith(embedding_model) for name in model_names):
+            print(f"✅ Embedding Model '{embedding_model}' is available")
+        else:
+            print(f"❌ Embedding Model '{embedding_model}' not found. Available models: {model_names}")
+            return False
+    except Exception as e:
+        print(f"❌ Failed to check embedding model availability: {e}")
+        return False
+
+    # Test 5: Test OpenAI-compatible embedding API
+    try:
+        client = OpenAI(base_url=backend_url, api_key="dummy")
+        response = client.embeddings.create(
+            model=embedding_model,
+            input="This is a test sentence.",
+            encoding_format="float"
+        )
+        if response.data and len(response.data) > 0 and response.data[0].embedding:
+            print("✅ OpenAI-compatible embedding API is working")
+            print(f"   Successfully generated embedding of dimension: {len(response.data[0].embedding)}")
+            return True
+        else:
+            print("❌ Embedding API test failed: No embedding data in response")
+            return False
+    except Exception as e:
+        print(f"❌ OpenAI-compatible embedding API test failed: {e}")
         return False
 
 if __name__ == "__main__":
