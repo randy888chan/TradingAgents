@@ -74,9 +74,10 @@ RUN chown -R appuser:appuser /app
 USER appuser
 
 # Set the entrypoint
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "-c", "if [ \"$LLM_PROVIDER\" = \"ollama\" ]; then ./docker-entrypoint.sh; else exec \"$@\"; fi", "--"]
+
 
 # Default command (can be overridden, e.g., by pytest command in CI)
-CMD ["python", "main.py"]
+CMD ["python", "-m", "cli.main"]
 
 EXPOSE 11434

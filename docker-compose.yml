@@ -12,6 +12,7 @@ services:
     #  - LLM_BACKEND_URL=http://localhost:11434/v1
     #  - LLM_DEEP_THINK_MODEL=qwen3:0.6b
     #  - LLM_QUICK_THINK_MODEL=qwen3:0.6b
+    #  - LLM_EMBEDDING_MODEL=nomic-embed-text
     #  - MAX_DEBATE_ROUNDS=1
     #  - ONLINE_TOOLS=False
     # The default command in the Dockerfile is `python main.py`.
