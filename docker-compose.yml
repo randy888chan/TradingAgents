@@ -6,6 +6,7 @@ services:
     volumes:
       - .:/app # Mount current directory to /app in container for live code changes
       - ./.ollama:/app/.ollama # Cache Ollama models
+      - ./data:/app/data # Mount data directory for data files
     #environment:
     #  - LLM_PROVIDER=ollama
     #  - LLM_BACKEND_URL=http://localhost:11434/v1
@@ -20,8 +21,7 @@ services:
     env_file:
       - .env # Load environment variables from files.env
     #command: python test_ollama_connection.py # Uncomment to run a specific test script
-    # If you want `docker-compose up` to run tests and then exit, this command is fine.
-    # If you want `docker-compose up` to run main.py, change command or remove it to use Dockerfile's CMD.
+    #command: python -m cli.main # Uncomment to run cli interface
     # For more flexibility, users can override the command when using `docker-compose run`.
     ports:
       - "11434:11434" # Expose port 11434 for Ollama  

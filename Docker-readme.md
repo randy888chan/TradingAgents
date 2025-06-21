@@ -59,11 +59,23 @@ docker run --rm \
 ```
 Adjust environment variables as needed for your local setup.
 
+### Run the TradingAgents CLI
+To run the cli interface
+```bash
+docker run --rm \
+  -e LLM_PROVIDER="ollama" \
+  -e LLM_BACKEND_URL="http://localhost:11434/v1" \
+  # Add other necessary environment variables for main.py
+  tradingagents python -m cli.main
+```
+Adjust environment variables as needed for your local setup.
+
 ### Using Docker Compose
 
 For a more streamlined local development experience, you can use Docker Compose. The `docker-compose.yml` file in the project root is configured to use the existing `Dockerfile`.
 
 **Build and Run Tests:**
+
 The default command in `docker-compose.yml` is set to run the test suite.
 ```bash
 docker-compose up --build
@@ -78,11 +90,19 @@ docker-compose run --rm app python test_ollama_connection.py
 ```
 
 **Run the Main Application:**
+
 To run the `main.py` script, you can override the default command:
 ```bash
 docker-compose run --rm app python main.py
 ```
 Or, you can modify the `command` in `docker-compose.yml` if you primarily want `docker-compose up` to run the main application.
+
+**Run the TradingAgents CLI Application:**
+
+To run the `cli/main.py` script, you can override the default command:
+```bash
+docker-compose run --it app python -m cli.main
+```
 
 **Environment Variables:**
 The necessary environment variables (like `LLM_PROVIDER`, `LLM_BACKEND_URL`, model names, etc.) are pre-configured in the `docker-compose.yml` for the `app` service. Ollama is started by the entrypoint script within the same container, so `LLM_BACKEND_URL` is set to `http://localhost:11434/v1`.

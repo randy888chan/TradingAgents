@@ -151,6 +151,7 @@ def select_shallow_thinking_agent(provider) -> str:
         ],
         "ollama": [
             ("llama3.2 local", "llama3.2"),
+            ("qwen3 local", "qwen3:0.6b"),
         ]
     }
 
