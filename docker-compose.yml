@@ -21,8 +21,10 @@ services:
     # Or, we can set a default command here to run tests:
     env_file:
       - .env # Load environment variables from files.env
+    tty: true # Keep the container running
+    stdin_open: true # Keep stdin open for interactive mode
     #command: python test_ollama_connection.py # Uncomment to run a specific test script
-    #command: python -m cli.main # Uncomment to run cli interface
-    # For more flexibility, users can override the command when using `docker-compose run`.
+    #command: python -m cli.main # Uncomment to run cli interface   
+    #command: python -m main # uncomment to run the main application
     ports:
       - "11434:11434" # Expose port 11434 for Ollama  

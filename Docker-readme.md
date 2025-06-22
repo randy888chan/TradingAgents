@@ -1,43 +1,142 @@
-# Local run with Docker or docker-compose
+# 🚀 Docker Setup for Trading Agents
 
-## Environment Configuration with .env
+This guide provides instructions for running the Trading Agents application within a secure and reproducible Docker environment. Using Docker simplifies setup, manages dependencies, and ensures a consistent experience across different machines.
 
-This project uses a `.env` file to manage environment-specific configurations for local development, especially when using Docker Compose. This allows you to customize settings without modifying version-controlled files like `docker-compose.yml`.
+The recommended method is using `docker-compose`, which handles the entire stack, including the Ollama server and model downloads.
 
-### Setup
-1.  **Create your local `.env` file:**
-    Copy the example configuration to a new `.env` file:
-    ```bash
-    cp .env.example .env
-    ```
-2.  **Customize your `.env` file:**
-    Open the `.env` file in a text editor and modify the variables as needed for your local setup. For example, you might want to change LLM models or API keys. 
+## Prerequisites
 
-### How it Works with Docker Compose
-When you run `docker-compose up` or `docker-compose run`, Docker Compose automatically looks for a `.env` file in the project root directory (where `docker-compose.yml` is located) and loads the environment variables defined in it. These variables are then passed into the container environment for the `app` service.
+Before you begin, ensure you have the following installed:
+*   [**Docker**](https://docs.docker.com/get-docker/)
+*   [**Docker Compose**](https://docs.docker.com/compose/install/) (usually included with Docker Desktop)
 
-The `.env` file itself is ignored by Git (as specified in `.gitignore`), so your local configurations will not be committed to the repository.
+## ⚡ Quickstart
 
-For streamlined experience, it is recommended to use docker compose as it simplifies experience eg handles mounting of directories for caching. Skip to [Docker Compose](#using-docker-compose) section for this.
+For those familiar with Docker, here are the essential steps:
 
-
-## Running with Docker
-
-This project supports running within a Docker container, which ensures a consistent environment for development and testing. 
-
-### Prerequisites
-- Docker installed and running on your system.
-
-### Build the Docker Image
-Navigate to the root directory of the project (where the `Dockerfile` is located) and run:
 ```bash
-docker build -t tradingagents .
+# 1. Clone the repository
+git clone https://github.com/AppliedAIMuse/TradingAgents.git
+cd TradingAgents
+
+# 2. Create the environment file
+cp .env.example .env
+
+# 3. Edit .env and set your API Keys or pick local LLM settings to run locally
+
+# 4. Build the app
+docker-compose build
+
+# 5. Run the comman-line app
+docker-compose run -it app
 ```
 
-### Test local ollama setup
-To test ollama connectivity and local model:
+## Step-by-Step Instructions
+
+### Step 1: Clone the Repository
+
 ```bash
-docker run -it --env-file .env tradingagents python test_ollama_connection.py
+git clone https://github.com/TauricResearch/TradingAgents.git
+cd TradingAgents
+```
+
+### Step 2: Configure Your Environment (`.env` file)
+
+The application is configured using an environment file. Create your own `.env` file by copying the provided template.
+
+```bash
+cp .env.example .env
+```
+
+Next, open the `.env` file and customize the settings. The most important variables are `LLM_PROVIDER` and `OPENAI_API_KEY`.
+
+*   **To use the local Ollama server:**
+    ```env
+    LLM_PROVIDER="ollama"
+    ```
+*   **To use external provider like OpenAI:**
+    ```env
+    LLM_PROVIDER="openai"
+    OPENAI_API_KEY="your-api-key-here"
+    ```
+    > **Note:** If you use an external provider, the Ollama service will not start, saving system resources.
+
+### Step 3: Run with `docker-compose` (Recommended)
+
+This is the simplest way to run the entire application.
+
+#### Build and Start the Containers
+
+The following command will build the Docker image, download the required LLM models (if using Ollama), and start the application.
+
+```bash
+# Use --build the first time or when you change dependencies
+docker-compose build
+
+# On subsequent runs, you can run directily
+docker-compose run -it app
+```
+
+The first time you run this, it may take several minutes to download the base image and the LLM models. Subsequent builds will be much faster thanks to Docker's caching.
+
+#### View Logs
+
+To view the application logs in real-time, you can run:
+```bash
+docker-compose logs -f
+```
+
+#### Stop the Containers
+
+To stop and remove the containers, press `Ctrl + C` in the terminal where `docker-compose run` is running, or run the following command from another terminal:
+```bash
+docker-compose down
+```
+
+
+### Step 4: Verify the Ollama Setup (Optional)
+
+If you are using `LLM_PROVIDER="ollama"`, you can verify that the Ollama server is running correctly and has the necessary models.
+
+Run the verification script inside the running container:
+```bash
+docker-compose exec app python test_ollama_connection.py
+```
+
+### Step 5: Run Ollama server commands (Optional)
+
+If you are using `LLM_PROVIDER="ollama"`, you can verify run any of the Ollama server commands like  list of all the models using: 
+```bash
+docker-compose exec app ollama list
+```
+
+✅ **Expected Output:**
+```
+Testing Ollama connection:
+  Backend URL: http://localhost:11434/v1
+  Model: qwen3:0.6b
+  Embedding Model: nomic-embed-text
+✅ Ollama API is responding
+✅ Model 'qwen3:0.6b' is available
+✅ OpenAI-compatible API is working
+   Response: ...
+```
+
+---
+
+## Alternative Method: Using `docker` Only
+
+If you prefer not to use `docker-compose`, you can build and run the container manually.
+
+**1. Build the Docker Image:**
+```bash
+docker build -t trading-agents .
+```
+
+**2. Test local ollama setup (Optional):**
+Make sure you have a `.env` file configured as described in Step 2. If you are using `LLM_PROVIDER="ollama"`, you can verify that the Ollama server is running correctly and has the necessary models.
+```bash
+docker run -it --env-file .env trading-agents python test_ollama_connection.py
 ```
 for picking environment settings from .env file. You can pass values directly using: 
 ```bash
@@ -46,10 +145,10 @@ docker run -it \
   -e LLM_BACKEND_URL="http://localhost:11434/v1" \
   -e LLM_DEEP_THINK_MODEL="qwen3:0.6b" \
   -e LLM_EMBEDDING_MODEL="nomic-embed-text"\ 
-  tradingagents \
+  trading-agents \
   python test_ollama_connection.py
 ```
-For prevent re-downloading of Ollama models, mount folder from your host and run as
+To prevent re-downloading of Ollama models, mount folder from your host and run as
 ```bash
 docker run -it \
   -e LLM_PROVIDER="ollama" \
@@ -57,91 +156,29 @@ docker run -it \
   -e LLM_DEEP_THINK_MODEL="qwen3:0.6b" \
   -e LLM_EMBEDDING_MODEL="nomic-embed-text"\ 
   -v ./ollama_cache:/app/.ollma \
-  tradingagents \
+  trading-agents \
   python test_ollama_connection.py
 ```
 
-**Notes on Ollama for Local Docker:**
-When `LLM_PROVIDER` is set to `ollama` the ollama server is automatically started in the docker conatiner. The `LLM_BACKEND_URL` is set to `http://localhost:11434/v1`. This assumes you have Ollama running on your host machine and accessible at port 11434. '/v1' is added to url at the end for OpenAI api compatibility. 
 
-
-### Run the Main Application
-To run the `main.py` script:
+**3. Run the Docker Container:**
+Make sure you have a `.env` file configured as described in Step 2.
 ```bash
-docker run -it --env-file .env tradingagents python -m main
-```
-or 
-```bash
-  -e LLM_PROVIDER="ollama" \
-  -e LLM_BACKEND_URL="http://localhost:11434/v1" \
-  -e LLM_DEEP_THINK_MODEL="qwen3:0.6b" \
-  -e LLM_QUICK_THINK_MODEL="qwen3:0.6b" \
-  -e LLM_EMBEDDING_MODEL="nomic-embed-text"\ 
-  -e MAX_DEBATE_ROUNDS="1" \
-  -e ONLINE_TOOLS="False" \
-  -v ./ollama_cache:/app/.ollama \
-  tradingagents python -m main
-```
-Adjust environment variables as needed for your local setup.
-
-### Run the TradingAgents CLI
-To run the cli interface (default in the container)
-```bash
-docker run -it --env-file .env tradingagents 
-```
-or 
-or 
-```bash
-  -e LLM_PROVIDER="ollama" \
-  -e LLM_BACKEND_URL="http://localhost:11434/v1" \
-  -v ./ollama_cache:/app/.ollma \
-  tradingagents python -m cli.main
-```
-Adjust environment variables as needed for your local setup.
-
-### Using Docker Compose
-
-For a more streamlined local development experience, it is recommended to use Docker Compose. The `docker-compose.yml` file in the project root is configured to use the existing `Dockerfile`.
-
-**Build and Run Tests:**
-
-The default command in `docker-compose.yml` is set to run the test suite.
-```bash
-docker-compose up --build
-```
-This command will build the image (if it's not already built or if changes are detected) and then run the `pytest tests/test_main.py` command. The `--rm` flag is implicitly handled by `up` when the process finishes, or you can run:
-```bash
-docker-compose run --it app # This will use the default command from docker-compose.yml
-```
-If you want to explicitly run the tests:
-```bash
-docker-compose run --rm app python test_ollama_connection.py
+docker run --rm -it \
+  --env-file .env \
+  -p 11434:11434 \
+  -v ./data:/app/data \
+  --name tradingagents-app \
+  trading-agents
 ```
 
-**Run the Main Application:**
 
-To run the `main.py` script, you can override the default command:
-```bash
-docker-compose run --rm app python -m main
-```
-Or, you can modify the `command` in `docker-compose.yml` if you primarily want `docker-compose up` to run the main application.
+## Configuration Details
 
-**Run the TradingAgents CLI Application:**
+### Live Reloading
+The `app` directory is mounted as a volume into the container. This means any changes you make to the source code on your local machine will be reflected instantly in the running container without needing to rebuild the image.
 
-To run the `cli/main.py` script, you can override the default command:
-```bash
-docker-compose run --it app python -m cli.main
-```
-
-**Environment Variables:**
-The necessary environment variables (like `LLM_PROVIDER`, `LLM_BACKEND_URL`, model names, etc.) are configured in the `docker-compose.yml` for the `app` service. Ollama is started by the entrypoint script within the same container when LLM_PROVIDER is set to `ollama`, and `LLM_BACKEND_URL` is set to `http://localhost:11434/v1`.
-
-When using enviroment file for `docker` command, please do not put extra quotes around the values, or any extra comments at the end otherwise docker will not pick the values. 
-
-**Live Code Reloading:**
-The current directory is mounted as a volume into the container at `/app`. This means changes you make to your local code will be reflected inside the container, which is useful for development. You might need to rebuild the image with `docker-compose build` or `docker-compose up --build` if you change dependencies in `requirements.txt` or modify the `Dockerfile` itself.
-
-**Ollama Model Caching:**
-To prevent re-downloading Ollama models, `docker-compose.yml` now mounts `./.ollama` on your host to `/app/.ollama` in the container. Models pulled by Ollama will be stored in `./.ollama/models` locally and persist across runs. Ensure this directory is in your `.gitignore`. If Docker has permission issues creating this directory, you might need to create it manually (`mkdir .ollama`).
-
-
+### Persistent Data
+The following volumes are used to persist data between container runs:
+*   `./data`: Stores any data generated by or used by the application.
+*   `ollama-cache`: A named volume that caches the Ollama models, so they don't need to be re-downloaded every time you restart the container.
