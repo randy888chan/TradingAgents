@@ -210,4 +210,117 @@ Please reference our work if you find *TradingAgents* provides you with some hel
       primaryClass={q-fin.TR},
       url={https://arxiv.org/abs/2412.20138}, 
 }
+
+---
+
+## FastAPI Backend API (Work in Progress)
+
+This section describes the setup for the FastAPI backend API, which is currently under development.
+
+### Setup and Running
+
+1.  **Create and activate a Python virtual environment.**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate
+    # On Windows: venv\Scripts\activate
+    ```
+
+2.  **Install dependencies:**
+    The main project `requirements.txt` includes dependencies for the `TradingAgents` framework. For the API, additional dependencies are also listed there.
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Set up environment variables:**
+    Copy the `.env.example` file to `.env` and update the values, especially `DATABASE_URL` and `SECRET_KEY`.
+    ```bash
+    cp .env.example .env
+    # Open .env and edit the variables
+    ```
+    A strong `SECRET_KEY` can be generated using:
+    ```bash
+    openssl rand -hex 32
+    ```
+
+4.  **Database Setup (PostgreSQL):**
+    - Ensure you have a PostgreSQL server running and accessible.
+    - Update `DATABASE_URL` in your `.env` file to point to your PostgreSQL instance (e.g., `postgresql://user:password@localhost:5432/yourdbname`).
+    - Apply database migrations using Alembic:
+      ```bash
+      alembic upgrade head
+      ```
+      This will create the necessary tables (e.g., `users`).
+
+5.  **Create an initial user (Optional - for testing login):**
+    You'll need a user in the database to test the login. You can create one using a Python script that utilizes `app.services.user_service.create_user` or by manually inserting into the database.
+
+    Example (run from project root, e.g., `python -m scripts.create_initial_user` after creating such a script):
+    ```python
+    # Example: scripts/create_initial_user.py
+    # from app.db.session import SessionLocal
+    # from app.services.user_service import create_user
+    # from app.schemas.user import UserCreate
+    #
+    # db = SessionLocal()
+    #
+    # user_in = UserCreate(email="test@example.com", password="password123")
+    # try:
+    #     db_user = create_user(db, user_in=user_in)
+    #     print(f"User {db_user.email} created successfully.")
+    # except Exception as e:
+    #     print(f"Error creating user: {e}")
+    # finally:
+    #     db.close()
+    ```
+
+6.  **Run the FastAPI application:**
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+    The API will typically be available at `http://127.0.0.1:8000`.
+    The OpenAPI documentation (Swagger UI) will be at `http://127.0.0.1:8000/api/v1/openapi.json` (raw JSON) or `http://127.0.0.1:8000/docs` (Swagger UI) if you enable it in `app/main.py`. For now, the openapi_url is set directly. Access `/docs` or `/redoc` for interactive API documentation.
+
+
+### API Endpoints
+
+-   **`POST /api/v1/auth/login`**: Authenticate a user and receive a JWT token.
+    -   Request body: `application/x-www-form-urlencoded` with `username` (email) and `password`.
+-   **`GET /api/v1/strategies`**: Retrieve a list of (dummy) strategies for the authenticated user. Requires Bearer token authentication.
+
+### Project Structure (API part)
+
+```
+app/
+├── api/
+│   └── v1/
+│       ├── api.py          # Main v1 router
+│       └── endpoints/
+│           ├── auth.py     # Auth endpoints (login)
+│           └── strategies.py # Strategies endpoints
+├── core/
+│   ├── config.py       # Configuration settings (dotenv loading)
+│   └── security.py     # Password hashing, JWT utils
+├── db/
+│   ├── base.py         # SQLAlchemy Base, imports all models
+│   └── session.py      # SQLAlchemy engine and session management
+├── models/
+│   └── user.py         # User SQLAlchemy model
+├── schemas/
+│   ├── strategy.py     # Pydantic schemas for Strategy
+│   ├── token.py        # Pydantic schemas for Token
+│   └── user.py         # Pydantic schemas for User
+├── services/
+│   └── user_service.py # User related database operations
+├── __init__.py
+└── main.py             # Main FastAPI application
+alembic/                  # Alembic migration scripts
+├── versions/
+└── env.py                # Alembic environment config
+alembic.ini               # Alembic configuration
+.env.example              # Example environment variables
+requirements.txt          # Project dependencies (includes API deps)
+README.md                 # This file
+... (other TradingAgents files)
+```
 ```

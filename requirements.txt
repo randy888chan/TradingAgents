@@ -22,3 +22,12 @@ redis
 chainlit
 rich
 questionary
+python-jose[cryptography]
+passlib[bcrypt]
+sqlalchemy
+psycopg2-binary
+alembic
+fastapi
+uvicorn[standard]
+pydantic[email]
+python-dotenv
