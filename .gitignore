@@ -6,3 +6,9 @@ src/
 eval_results/
 eval_data/
 *.egg-info/
+.ollama/
+.local/
+.cache/
+.pytest_cache/
+.devcontainer/
+.env
