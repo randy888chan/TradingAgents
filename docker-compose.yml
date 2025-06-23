@@ -7,6 +7,8 @@ services:
       - .:/app # Mount current directory to /app in container for live code changes
       - ./.ollama:/app/.ollama # Cache Ollama models
       - ./data:/app/data # Mount data directory for data files
+    env_file:
+      - .env # Load environment variables from files.env
     #environment:
     #  - LLM_PROVIDER=ollama
     #  - LLM_BACKEND_URL=http://localhost:11434/v1
@@ -19,12 +21,18 @@ services:
     # For running tests with compose, one can use:
     # docker-compose run --rm app pytest tests/test_main.py
     # Or, we can set a default command here to run tests:
-    env_file:
-      - .env # Load environment variables from files.env
-    tty: true # Keep the container running
-    stdin_open: true # Keep stdin open for interactive mode
     #command: python test_ollama_connection.py # Uncomment to run a specific test script
     #command: python -m cli.main # Uncomment to run cli interface   
     #command: python -m main # uncomment to run the main application
+    tty: true # Keep the container running
+    stdin_open: true # Keep stdin open for interactive mode
+
+    # Uncomment the following lines to enable GPU support 
+    # For more information, refer to the Docker documentation: https://docs.docker.com/compose/how-tos/gpu-support/
+    #deploy: 
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - capabilities: ["gpu"]
     ports:
       - "11434:11434" # Expose port 11434 for Ollama  
