@@ -707,7 +707,7 @@ def get_stock_news_openai(ticker, curr_date):
     client = OpenAI(base_url=config["backend_url"])
 
     response = client.responses.create(
-        model="gpt-4.1-mini",
+        model=config["shallow_thinker"],
         input=[
             {
                 "role": "system",
@@ -742,7 +742,7 @@ def get_global_news_openai(curr_date):
     client = OpenAI(base_url=config["backend_url"])
 
     response = client.responses.create(
-        model="gpt-4.1-mini",
+        model=config["shallow_thinker"],
         input=[
             {
                 "role": "system",
@@ -777,7 +777,7 @@ def get_fundamentals_openai(ticker, curr_date):
     client = OpenAI(base_url=config["backend_url"])
 
     response = client.responses.create(
-        model="gpt-4.1-mini",
+        model=config["shallow_thinker"],
         input=[
             {
                 "role": "system",
