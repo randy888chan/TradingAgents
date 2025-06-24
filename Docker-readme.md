@@ -91,26 +91,26 @@ For faster rebuilds with caching:
 
 ```bash
 # Build with BuildKit optimization
-./build-optimized.sh
+./build.sh
 
 # With testing
-./build-optimized.sh --test
+./build.sh --test
 
 # Clean cache and rebuild
-./build-optimized.sh --clean --test
+./build.sh --clean --test
 ```
 
 **Windows Command Prompt:**
 
 ```cmd
 REM Build with BuildKit optimization
-build-optimized.bat
+build.bat
 
 REM With testing
-build-optimized.bat --test
+build.bat --test
 
 REM Clean cache and rebuild
-build-optimized.bat --clean --test
+build.bat --clean --test
 ```
 
 **Benefits of Optimized Build:**
@@ -202,7 +202,7 @@ Choose the appropriate method based on your LLM provider configuration:
 ```bash
 # Build the app container
 docker compose --profile openai build
-# Or use optimized build: ./build-optimized.sh
+# Or use optimized build: ./build.sh
 
 # Test OpenAI connection (optional)
 docker compose --profile openai run --rm app-openai python tests/test_openai_connection.py
@@ -218,7 +218,7 @@ docker compose --profile openai run -it app-openai
 ```bash
 # Start the Ollama service
 docker compose --profile ollama up -d --build
-# Or use optimized build: ./build-optimized.sh
+# Or use optimized build: ./build.sh
 
 # Initialize Ollama models (first time only)
 # Linux/macOS:
@@ -250,7 +250,7 @@ Then run:
 ```bash
 # Start with GPU support
 docker compose --profile ollama up -d --build
-# Or use optimized build: ./build-optimized.sh
+# Or use optimized build: ./build.sh
 
 # Initialize Ollama models (first time only)
 # Linux/macOS:
@@ -370,7 +370,10 @@ If you prefer not to use `docker-compose`, you can build and run the container m
 docker build -t trading-agents .
 
 # Or optimized build (recommended)
-./build-optimized.sh
+# Linux/macOS:
+./build.sh
+# Windows Command Prompt:
+build.bat
 ```
 
 **2. Test local ollama setup (Optional):**
