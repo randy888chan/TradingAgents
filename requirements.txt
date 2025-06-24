@@ -27,4 +27,3 @@ questionary
 ollama
 pytest
 python-dotenv
-
