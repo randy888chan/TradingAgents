@@ -65,7 +65,7 @@ def test_ollama_connection():
     
     # Test 4: Check if the embedding model is available
     try:
-        response = requests.get(f"{api_url}/api/tags", timeout=10)
+        response = requests.get(f"{backend_url.replace('/v1', '')}/api/tags", timeout=10)
         models = response.json().get("models", [])
         model_names = [m.get("name") for m in models if m.get("name")]
         

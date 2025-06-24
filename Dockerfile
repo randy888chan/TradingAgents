@@ -16,10 +16,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     git \
     && apt-get clean
 
-# Install Ollama in builder stage with cache mount for downloads
-RUN --mount=type=cache,target=/tmp/ollama-cache \
-    curl -fsSL https://ollama.com/install.sh | sh
-
 # Create virtual environment
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -36,8 +32,7 @@ FROM python:3.9-slim-bookworm AS runtime
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    OLLAMA_HOST=0.0.0.0
+    PIP_DEFAULT_TIMEOUT=100 
 
 # Install runtime dependencies
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -46,9 +41,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     curl \
     git \
     && apt-get clean
-
-# Copy Ollama from builder stage instead of installing again
-COPY --from=builder /usr/local/bin/ollama /usr/local/bin/ollama
 
 # Copy virtual environment from builder stage
 COPY --from=builder /opt/venv /opt/venv
@@ -60,10 +52,6 @@ RUN groupadd -r appuser && useradd -r -g appuser -s /bin/bash -d /app appuser
 # Create app directory
 WORKDIR /app
 
-# Copy the entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
 # Copy the application code
 COPY . .
 
@@ -73,11 +61,5 @@ RUN chown -R appuser:appuser /app
 # Switch to non-root user
 USER appuser
 
-# Set the entrypoint
-ENTRYPOINT ["/bin/sh", "-c", "if [ \"$LLM_PROVIDER\" = \"ollama\" ]; then ./docker-entrypoint.sh; else exec \"$@\"; fi", "--"]
-
-
 # Default command (can be overridden, e.g., by pytest command in CI)
 CMD ["python", "-m", "cli.main"]
-
-EXPOSE 11434
