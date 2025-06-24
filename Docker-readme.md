@@ -59,11 +59,66 @@ cp .env.example .env
 docker compose --profile ollama up -d --build
 
 # 4. Initialize models (first time only)
+# Linux/macOS:
 ./init-ollama.sh
+# Windows Command Prompt:
+init-ollama.bat
+
 
 # 5. Run the command-line app
 docker compose --profile ollama run -it app-ollama
 ```
+
+## 🛠️ Build Methods
+
+Choose your preferred build method:
+
+### Method 1: Quick Build (Recommended)
+
+```bash
+# Standard Docker build
+docker build -t trading-agents .
+
+# Or with docker-compose
+docker compose build
+```
+
+### Method 2: Optimized Build (Advanced)
+
+For faster rebuilds with caching:
+
+**Linux/macOS:**
+
+```bash
+# Build with BuildKit optimization
+./build-optimized.sh
+
+# With testing
+./build-optimized.sh --test
+
+# Clean cache and rebuild
+./build-optimized.sh --clean --test
+```
+
+**Windows Command Prompt:**
+
+```cmd
+REM Build with BuildKit optimization
+build-optimized.bat
+
+REM With testing
+build-optimized.bat --test
+
+REM Clean cache and rebuild
+build-optimized.bat --clean --test
+```
+
+**Benefits of Optimized Build:**
+
+- ⚡ 60-90% faster rebuilds via BuildKit cache
+- 🔄 Automatic fallback to simple build if needed
+- 📊 Cache statistics and build info
+- 🧪 Built-in testing capabilities
 
 ## Step-by-Step Instructions
 
@@ -147,6 +202,7 @@ Choose the appropriate method based on your LLM provider configuration:
 ```bash
 # Build the app container
 docker compose --profile openai build
+# Or use optimized build: ./build-optimized.sh
 
 # Test OpenAI connection (optional)
 docker compose --profile openai run --rm app-openai python tests/test_openai_connection.py
@@ -162,13 +218,13 @@ docker compose --profile openai run -it app-openai
 ```bash
 # Start the Ollama service
 docker compose --profile ollama up -d --build
+# Or use optimized build: ./build-optimized.sh
 
 # Initialize Ollama models (first time only)
 # Linux/macOS:
 ./init-ollama.sh
 # Windows Command Prompt:
 init-ollama.bat
-
 
 # Test Ollama connection (optional)
 docker compose --profile ollama exec app-ollama python tests/test_ollama_connection.py
@@ -194,6 +250,7 @@ Then run:
 ```bash
 # Start with GPU support
 docker compose --profile ollama up -d --build
+# Or use optimized build: ./build-optimized.sh
 
 # Initialize Ollama models (first time only)
 # Linux/macOS:
@@ -309,20 +366,24 @@ If you prefer not to use `docker-compose`, you can build and run the container m
 **1. Build the Docker Image:**
 
 ```bash
+# Standard build
 docker build -t trading-agents .
+
+# Or optimized build (recommended)
+./build-optimized.sh
 ```
 
 **2. Test local ollama setup (Optional):**
 Make sure you have a `.env` file configured as described in Step 2. If you are using `LLM_PROVIDER="ollama"`, you can verify that the Ollama server is running correctly and has the necessary models.
 
 ```bash
-docker run -it --env-file .env trading-agents python tests/test_ollama_connection.py
+docker run -it --network host --env-file .env trading-agents python tests/test_ollama_connection.py
 ```
 
 for picking environment settings from .env file. You can pass values directly using:
 
 ```bash
-docker run -it \
+docker run -it --network host \
   -e LLM_PROVIDER="ollama" \
   -e LLM_BACKEND_URL="http://localhost:11434/v1" \
   -e LLM_DEEP_THINK_MODEL="qwen3:0.6b" \
@@ -334,7 +395,7 @@ docker run -it \
 To prevent re-downloading of Ollama models, mount folder from your host and run as
 
 ```bash
-docker run -it \
+docker run -it --network host \
   -e LLM_PROVIDER="ollama" \
   -e LLM_BACKEND_URL="http://localhost:11434/v1" \
   -e LLM_DEEP_THINK_MODEL="qwen3:0.6b" \
@@ -349,8 +410,8 @@ Make sure you have a `.env` file configured as described in Step 2.
 
 ```bash
 docker run --rm -it \
+  --network host \
   --env-file .env \
-  -p 11434:11434 \
   -v ./data:/app/data \
   --name trading-agents \
   trading-agents
@@ -362,8 +423,8 @@ For running on GPU machine, pass `--gpus=all` flag to the `docker run` command:
 ```bash
 docker run --rm -it \
   --gpus=all \
+  --network host \
   --env-file .env \
-  -p 11434:11434 \
   -v ./data:/app/data \
   --name trading-agents \
   trading-agents
