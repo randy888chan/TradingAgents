@@ -741,6 +741,16 @@ def run_analysis():
     config["deep_think_llm"] = selections["deep_thinker"]
     config["backend_url"] = selections["backend_url"]
     config["llm_provider"] = selections["llm_provider"].lower()
+    
+    # Add API key based on provider
+    import os
+    if config["llm_provider"] == "alibaba":
+        config["api_key"] = os.getenv("DASHSCOPE_API_KEY", "")
+        if not config["api_key"]:
+            console.print("\n[red]Error: DASHSCOPE_API_KEY environment variable not set for Alibaba provider![/red]")
+            console.print("[yellow]Please set your Alibaba API key:[/yellow]")
+            console.print("[cyan]export DASHSCOPE_API_KEY='your-api-key-here'[/cyan]")
+            exit(1)
 
     # Initialize the graph
     graph = TradingAgentsGraph(

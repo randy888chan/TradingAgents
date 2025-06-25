@@ -5,16 +5,24 @@ from openai import OpenAI
 
 class FinancialSituationMemory:
     def __init__(self, name, config):
+        self.config = config
         if config["backend_url"] == "http://localhost:11434/v1":
             self.embedding = "nomic-embed-text"
+            self.client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")  # Ollama client
+        elif config.get("llm_provider", "").lower() == "alibaba":
+            self.embedding = "text-embedding-v3"  # 阿里云embedding模型
+            self.client = OpenAI(
+                base_url=config["backend_url"], 
+                api_key=config.get("api_key", "")
+            )  # 阿里云客户端
         else:
             self.embedding = "text-embedding-3-small"
-            self.client = OpenAI()
+            self.client = OpenAI()  # Standard OpenAI client
         self.chroma_client = chromadb.Client(Settings(allow_reset=True))
         self.situation_collection = self.chroma_client.create_collection(name=name)
 
     def get_embedding(self, text):
-        """Get OpenAI embedding for a text"""
+        """Get embedding for a text using the configured client"""
         
         response = self.client.embeddings.create(
             model=self.embedding, input=text

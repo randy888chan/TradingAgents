@@ -1,6 +1,8 @@
 env/
 __pycache__/
 .DS_Store
+.vscode/
+tradingagents-env/
 *.csv
 src/
 eval_results/

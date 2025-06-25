@@ -151,6 +151,11 @@ def select_shallow_thinking_agent(provider) -> str:
         ],
         "ollama": [
             ("llama3.2 local", "llama3.2"),
+        ],
+        "alibaba": [
+            ("Qwen-Plus (阿里云) - 平衡性能和成本", "qwen-plus"),
+            ("Qwen-Max (阿里云) - 最强推理能力", "qwen-max"),
+            ("Qwen-Turbo (阿里云) - 快速低成本", "qwen-turbo"),
         ]
     }
 
@@ -211,7 +216,12 @@ def select_deep_thinking_agent(provider) -> str:
             ("Deepseek - latest iteration of the flagship chat model family from the DeepSeek team.", "deepseek/deepseek-chat-v3-0324:free"),
         ],
         "ollama": [
-            ("qwen3", "qwen3"),
+            ("llama3.2 local", "llama3.2"),
+        ],
+        "alibaba": [
+            ("Qwen-Plus (阿里云) - 平衡性能和成本", "qwen-plus"),
+            ("Qwen-Max (阿里云) - 最强推理能力", "qwen-max"),
+            ("Qwen-Turbo (阿里云) - 快速低成本", "qwen-turbo"),
         ]
     }
     
@@ -245,7 +255,8 @@ def select_llm_provider() -> tuple[str, str]:
         ("Anthropic", "https://api.anthropic.com/"),
         ("Google", "https://generativelanguage.googleapis.com/v1"),
         ("Openrouter", "https://openrouter.ai/api/v1"),
-        ("Ollama", "http://localhost:11434/v1"),        
+        ("Ollama", "http://localhost:11434/v1"),
+        ("Alibaba", "https://dashscope.aliyuncs.com/compatible-mode/v1"),        
     ]
     
     choice = questionary.select(
