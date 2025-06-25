@@ -18,4 +18,6 @@ DEFAULT_CONFIG = {
     "max_recur_limit": 100,
     # Tool settings
     "online_tools": True,
+    # Language settings
+    "output_language": "chinese",  # Options: "english", "chinese"
 }

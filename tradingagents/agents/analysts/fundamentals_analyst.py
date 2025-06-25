@@ -20,23 +20,43 @@ def create_fundamentals_analyst(llm, toolkit):
                 toolkit.get_simfin_income_stmt,
             ]
 
-        system_message = (
-            "You are a researcher tasked with analyzing fundamental information over the past week about a company. Please write a comprehensive report of the company's fundamental information such as financial documents, company profile, basic company financials, company financial history, insider sentiment and insider transactions to gain a full view of the company's fundamental information to inform traders. Make sure to include as much detail as possible. Do not simply state the trends are mixed, provide detailed and finegrained analysis and insights that may help traders make decisions."
-            + " Make sure to append a Markdown table at the end of the report to organize key points in the report, organized and easy to read.",
-        )
+        # 根据配置选择语言
+        if toolkit.config.get("output_language", "english") == "chinese":
+            system_message = (
+                "你是一个负责分析公司过去一周基本面信息的研究员。请写一份关于公司基本面信息的综合报告，包括财务文件、公司概况、基本公司财务、公司财务历史、内部人员情绪和内部人员交易，以获得公司基本面信息的全面视图，为交易员提供信息。确保包含尽可能多的细节。不要简单地说趋势是混合的，提供详细和细致的分析和洞察，可能有助于交易员做出决策。"
+                + " 确保在报告末尾附上一个Markdown表格来组织报告中的关键点，使其有序且易于阅读。"
+            )
+            assistant_prompt = (
+                "你是一个有用的AI助手，与其他助手协作。"
+                " 使用提供的工具来朝着回答问题的方向前进。"
+                " 如果你无法完全回答，没关系；另一个具有不同工具的助手"
+                " 会在你停下的地方继续帮助。执行你能做的事情来取得进展。"
+                " 如果你或任何其他助手有最终交易提案：**买入/持有/卖出**或可交付成果，"
+                " 在你的回应前加上最终交易提案：**买入/持有/卖出**，这样团队就知道要停止了。"
+                " 你可以使用以下工具：{tool_names}。\n{system_message}"
+                "供你参考，当前日期是{current_date}。我们想要查看的公司是{ticker}"
+            )
+        else:
+            system_message = (
+                "You are a researcher tasked with analyzing fundamental information over the past week about a company. Please write a comprehensive report of the company's fundamental information such as financial documents, company profile, basic company financials, company financial history, insider sentiment and insider transactions to gain a full view of the company's fundamental information to inform traders. Make sure to include as much detail as possible. Do not simply state the trends are mixed, provide detailed and finegrained analysis and insights that may help traders make decisions."
+                + " Make sure to append a Markdown table at the end of the report to organize key points in the report, organized and easy to read."
+            )
+            assistant_prompt = (
+                "You are a helpful AI assistant, collaborating with other assistants."
+                " Use the provided tools to progress towards answering the question."
+                " If you are unable to fully answer, that's OK; another assistant with different tools"
+                " will help where you left off. Execute what you can to make progress."
+                " If you or any other assistant has the FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** or deliverable,"
+                " prefix your response with FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** so the team knows to stop."
+                " You have access to the following tools: {tool_names}.\n{system_message}"
+                "For your reference, the current date is {current_date}. The company we want to look at is {ticker}"
+            )
 
         prompt = ChatPromptTemplate.from_messages(
             [
                 (
                     "system",
-                    "You are a helpful AI assistant, collaborating with other assistants."
-                    " Use the provided tools to progress towards answering the question."
-                    " If you are unable to fully answer, that's OK; another assistant with different tools"
-                    " will help where you left off. Execute what you can to make progress."
-                    " If you or any other assistant has the FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** or deliverable,"
-                    " prefix your response with FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** so the team knows to stop."
-                    " You have access to the following tools: {tool_names}.\n{system_message}"
-                    "For your reference, the current date is {current_date}. The company we want to look at is {ticker}",
+                    assistant_prompt,
                 ),
                 MessagesPlaceholder(variable_name="messages"),
             ]
