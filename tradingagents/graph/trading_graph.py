@@ -111,10 +111,14 @@ class TradingAgentsGraph:
         self.graph = self.graph_setup.setup_graph(selected_analysts)
 
     def _create_tool_nodes(self) -> Dict[str, ToolNode]:
-        """Create tool nodes for different data sources."""
+        """Create tool nodes for different data sources with caching support."""
         return {
             "market": ToolNode(
                 [
+                    # cached tools (preferred)
+                    self.toolkit.get_YFin_data_cached,
+                    self.toolkit.get_YFin_data_window_cached,
+                    self.toolkit.get_stockstats_indicators_cached,
                     # online tools
                     self.toolkit.get_YFin_data_online,
                     self.toolkit.get_stockstats_indicators_report_online,
@@ -133,6 +137,9 @@ class TradingAgentsGraph:
             ),
             "news": ToolNode(
                 [
+                    # cached tools (preferred)
+                    self.toolkit.get_finnhub_news_cached,
+                    self.toolkit.get_google_news_cached,
                     # online tools
                     self.toolkit.get_global_news_openai,
                     self.toolkit.get_google_news,

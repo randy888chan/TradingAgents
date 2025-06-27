@@ -39,9 +39,17 @@ logs/
 *token*
 *secret*
 
-# Temporary files
+# Time series cache data
+tradingagents/dataflows/data_cache/
+*.db
+*.parquet
+
+# Test results and temporary files
 *.tmp
 *.temp
+*_results_*.json
+test_cache_*.py
+test_finnhub_upgrade.py
 
 *.csv
 src/
