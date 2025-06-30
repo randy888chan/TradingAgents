@@ -11,7 +11,6 @@ from rich.columns import Columns
 from rich.markdown import Markdown
 from rich.layout import Layout
 from rich.text import Text
-from rich.live import Live
 from rich.table import Table
 from collections import deque
 import time
@@ -165,6 +164,22 @@ class MessageBuffer:
             report_parts.append(f"{self.report_sections['final_trade_decision']}")
 
         self.final_report = "\n\n".join(report_parts) if report_parts else None
+
+    def reset(self):
+        """Clear all stored messages and reports and reset agent status."""
+        self.messages.clear()
+        self.tool_calls.clear()
+        self.current_report = None
+        self.final_report = None
+        for key in self.report_sections:
+            self.report_sections[key] = None
+        for key in self.agent_status:
+            self.agent_status[key] = "pending"
+        self.current_agent = None
+
+    def get_report_sections(self):
+        """Return a copy of the current report sections."""
+        return dict(self.report_sections)
 
 
 message_buffer = MessageBuffer()
