@@ -1,7 +1,7 @@
 # gets data/stats
 
 import yfinance as yf
-from typing import Annotated, Callable, Any, Optional
+from typing import Annotated, Callable, Any, Optional, Dict
 from pandas import DataFrame
 import pandas as pd
 from functools import wraps
@@ -9,12 +9,23 @@ from functools import wraps
 from .utils import save_output, SavePathType, decorate_all_methods
 
 
+_TICKER_CACHE: Dict[str, yf.Ticker] = {}
+
+
+def clear_cache() -> None:
+    """Clear the internal ticker cache."""
+    _TICKER_CACHE.clear()
+
+
 def init_ticker(func: Callable) -> Callable:
     """Decorator to initialize yf.Ticker and pass it to the function."""
 
     @wraps(func)
     def wrapper(symbol: Annotated[str, "ticker symbol"], *args, **kwargs) -> Any:
-        ticker = yf.Ticker(symbol)
+        ticker = _TICKER_CACHE.get(symbol)
+        if ticker is None:
+            ticker = yf.Ticker(symbol)
+            _TICKER_CACHE[symbol] = ticker
         return func(ticker, *args, **kwargs)
 
     return wrapper
