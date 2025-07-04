@@ -212,7 +212,7 @@ def select_deep_thinking_agent(provider) -> str:
             ("Deepseek - latest iteration of the flagship chat model family from the DeepSeek team.", "deepseek/deepseek-chat-v3-0324:free"),
         ],
         "ollama": [
-            ("llama3.1 local", "llama3.1"),
+    revert-47-docker-ollama
             ("qwen3", "qwen3"),
         ]
     }
