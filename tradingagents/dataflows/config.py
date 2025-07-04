@@ -1,5 +1,6 @@
 import tradingagents.default_config as default_config
 from typing import Dict, Optional
+import os
 
 # Use default config but allow it to be overridden
 _config: Optional[Dict] = None
@@ -12,6 +13,11 @@ def initialize_config():
     if _config is None:
         _config = default_config.DEFAULT_CONFIG.copy()
         DATA_DIR = _config["data_dir"]
+        
+        # Create necessary directories
+        os.makedirs(DATA_DIR, exist_ok=True)
+        os.makedirs(_config["results_dir"], exist_ok=True)
+        os.makedirs(_config["data_cache_dir"], exist_ok=True)
 
 
 def set_config(config: Dict):
@@ -21,6 +27,11 @@ def set_config(config: Dict):
         _config = default_config.DEFAULT_CONFIG.copy()
     _config.update(config)
     DATA_DIR = _config["data_dir"]
+    
+    # Create necessary directories
+    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(_config["results_dir"], exist_ok=True)
+    os.makedirs(_config["data_cache_dir"], exist_ok=True)
 
 
 def get_config() -> Dict:
