@@ -124,6 +124,14 @@ You will need the OpenAI API for all the agents.
 export OPENAI_API_KEY=$YOUR_OPENAI_API_KEY
 ```
 
+### Optional Environment Variables
+
+You can customize the data and results directories:
+```bash
+export TRADINGAGENTS_DATA_DIR="./data"  # Default: "./data"
+export TRADINGAGENTS_RESULTS_DIR="./results"  # Default: "./results"
+```
+
 ### CLI Usage
 
 You can also try out the CLI directly by running:

@@ -1,8 +1,9 @@
+import logging
 from typing import Annotated, Dict
 from .reddit_utils import fetch_top_from_category
-from .yfin_utils import *
-from .stockstats_utils import *
-from .googlenews_utils import *
+from .yfin_utils import YFinanceUtils
+from .stockstats_utils import StockstatsUtils
+from .googlenews_utils import getNewsData
 from .finnhub_utils import get_data_in_range
 from dateutil.relativedelta import relativedelta
 from concurrent.futures import ThreadPoolExecutor
@@ -15,6 +16,10 @@ import yfinance as yf
 from openai import OpenAI
 from .config import get_config, set_config, DATA_DIR
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def get_finnhub_news(
     ticker: Annotated[
@@ -23,7 +28,7 @@ def get_finnhub_news(
     ],
     curr_date: Annotated[str, "Current date in yyyy-mm-dd format"],
     look_back_days: Annotated[int, "how many days to look back"],
-):
+) -> str:
     """
     Retrieve news about a company within a time frame
 
@@ -172,7 +177,7 @@ def get_simfin_balance_sheet(
 
     # Check if there are any available reports; if not, return a notification
     if filtered_df.empty:
-        print("No balance sheet available before the given current date.")
+        logger.warning(f"No balance sheet available before the given current date for {ticker}.")
         return ""
 
     # Get the most recent balance sheet by selecting the row with the latest Publish Date
@@ -219,7 +224,7 @@ def get_simfin_cashflow(
 
     # Check if there are any available reports; if not, return a notification
     if filtered_df.empty:
-        print("No cash flow statement available before the given current date.")
+        logger.warning(f"No cash flow statement available before the given current date for {ticker}.")
         return ""
 
     # Get the most recent cash flow statement by selecting the row with the latest Publish Date
@@ -231,7 +236,7 @@ def get_simfin_cashflow(
     return (
         f"## {freq} cash flow statement for {ticker} released on {str(latest_cash_flow['Publish Date'])[0:10]}: \n"
         + str(latest_cash_flow)
-        + "\n\nThis includes metadata like reporting dates and currency, share details, and a breakdown of cash movements. Operating activities show cash generated from core business operations, including net income adjustments for non-cash items and working capital changes. Investing activities cover asset acquisitions/disposals and investments. Financing activities include debt transactions, equity issuances/repurchases, and dividend payments. The net change in cash represents the overall increase or decrease in the company's cash position during the reporting period."
+        + "\n\nThis includes metadata like reporting dates and currency, share details, and a breakdown of operating, investing, and financing activities. Operating activities show cash generated from core business operations, investing activities reflect capital expenditures and investments, while financing activities include debt and equity transactions."
     )
 
 
@@ -266,7 +271,7 @@ def get_simfin_income_statements(
 
     # Check if there are any available reports; if not, return a notification
     if filtered_df.empty:
-        print("No income statement available before the given current date.")
+        logger.warning(f"No income statement available before the given current date for {ticker}.")
         return ""
 
     # Get the most recent income statement by selecting the row with the latest Publish Date
@@ -575,11 +580,15 @@ def get_stockstats_indicator(
             os.path.join(DATA_DIR, "market_data", "price_data"),
             online=online,
         )
+    except FileNotFoundError as e:
+        logger.error(f"Data file not found for {symbol}: {e}")
+        return f"Error: Data file not found for {symbol}. Please ensure data is available."
+    except ValueError as e:
+        logger.error(f"Invalid indicator {indicator} for {symbol}: {e}")
+        return f"Error: Invalid indicator {indicator} for {symbol}."
     except Exception as e:
-        print(
-            f"Error getting stockstats indicator data for indicator {indicator} on {curr_date}: {e}"
-        )
-        return ""
+        logger.error(f"Unexpected error getting stockstats indicator {indicator} for {symbol} on {curr_date}: {e}")
+        return f"Error: Failed to retrieve {indicator} data for {symbol}."
 
     return str(indicator_value)
 
